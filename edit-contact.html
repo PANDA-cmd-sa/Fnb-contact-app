@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Contact</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+        animation: slideUp 0.6s ease-out;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+        font-size: 2.2rem;
+        font-weight: 600;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      #avatarImage {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      #avatarImage img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #667eea;
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      #avatarImage img:hover {
+        transform: scale(1.05);
+        box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      label {
+        font-weight: 600;
+        color: #555;
+        font-size: 0.95rem;
+        letter-spacing: 0.5px;
+      }
+
+      input[type="text"],
+      input[type="email"] {
+        padding: 15px 18px;
+        border: 2px solid #e1e8ed;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.8);
+      }
+
+      input[type="text"]:focus,
+      input[type="email"]:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        transform: translateY(-2px);
+      }
+
+      input[readonly] {
+        background: rgba(240, 240, 240, 0.8);
+        color: #666;
+        cursor: not-allowed;
+      }
+
+      input[type="file"] {
+        padding: 12px;
+        border: 2px dashed #667eea;
+        border-radius: 12px;
+        background: rgba(102, 126, 234, 0.02);
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      input[type="file"]:hover {
+        border-color: #764ba2;
+        background: rgba(118, 75, 162, 0.05);
+      }
+
+      .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+      }
+
+      button {
+        flex: 1;
+        min-width: 120px;
+        padding: 15px 25px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      #submitForm {
+        background: linear-gradient(135deg, #4CAF50, #45a049);
+        color: white;
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+      }
+
+      #submitForm:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(76, 175, 80, 0.6);
+      }
+
+      #editContact {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      #editContact:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+      }
+
+      #deleteContact {
+        background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+        color: white;
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+      }
+
+      #deleteContact:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
+      }
+
+      #homeLink {
+        background: rgba(255, 255, 255, 0.9);
+        color: #667eea;
+        border: 2px solid #667eea;
+      }
+
+      #homeLink:hover {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      button:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .loading {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .loading::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        animation: loading 1.5s infinite;
+      }
+
+      @keyframes loading {
+        0% { left: -100%; }
+        100% { left: 100%; }
+      }
+
+      .edit-mode {
+        animation: editMode 0.5s ease-out;
+      }
+
+      @keyframes editMode {
+        0% { background: rgba(255, 255, 255, 0.95); }
+        50% { background: rgba(102, 126, 234, 0.1); }
+        100% { background: rgba(255, 255, 255, 0.95); }
+      }
+
+      .success-animation {
+        animation: success 0.6s ease-out;
+      }
+
+      @keyframes success {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+      }
+
+      .delete-confirm {
+        background: linear-gradient(135deg, #ff9a9e, #fecfef);
+        animation: deleteConfirm 0.3s ease-out;
+      }
+
+      @keyframes deleteConfirm {
+        0% { transform: scale(1); }
+        50% { transform: scale(0.95); }
+        100% { transform: scale(1); }
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          padding: 30px 20px;
+          margin: 10px;
+        }
+
+        .button-group {
+          flex-direction: column;
+        }
+
+        button {
+          min-width: auto;
+        }
+
+        h1 {
+          font-size: 1.8rem;
+        }
+
+        #avatarImage img {
+          width: 120px;
+          height: 120px;
+        }
+      }
+
+      .view-mode {
+        opacity: 0.8;
+      }
+
+      .edit-mode input:not([readonly]) {
+        background: rgba(255, 255, 255, 1);
+        border-color: #667eea;
+      }
+
+      .status-indicator {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .status-view {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+      }
+
+      .status-edit {
+        background: rgba(76, 175, 80, 0.1);
+        color: #4CAF50;
+      }
+    </style>
+  </head>
+  <body onload="getContact()">
+    <div class="container">
+      <div class="status-indicator status-view" id="statusIndicator">View Mode</div>
+      <h1>Contact Details</h1>
+      
+      <div id="avatarImage"></div>
+      
+      <form id="editForm" autocomplete="on">
+        <div class="form-group">
+          <label for="firstname">First Name</label>
+          <input type="text" name="firstname" id="firstname" readonly />
+        </div>
+        
+        <div class="form-group">
+          <label for="lastname">Last Name</label>
+          <input type="text" name="lastname" id="lastname" readonly />
+        </div>
+        
+        <div class="form-group">
+          <label for="mobile">Mobile</label>
+          <input type="text" name="mobile" id="mobile" readonly />
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" name="email" id="email" readonly />
+        </div>
+        
+        <div class="form-group">
+          <label for="avatar" id="avatarLabel" hidden>Change Profile Image</label>
+          <input type="file" name="avatar" id="avatar" accept="image/*" hidden />
+        </div>
+
+        <div class="button-group">
+          <button type="submit" id="submitForm" hidden>Save Changes</button>
+          <button id="homeLink" type="button">Home</button>
+          <button id="editContact" type="button">Edit</button>
+          <button id="deleteContact" type="button">Delete</button>
+        </div>
+      </form>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+      document
+        .getElementById("editContact")
+        .addEventListener("click", editContact);
+      document.getElementById("homeLink").addEventListener("click", homeLink);
+      document
+        .getElementById("submitForm")
+        .addEventListener("click", submitForm);
+      document
+        .getElementById("deleteContact")
+        .addEventListener("click", deleteContact);
+      var id = getId();
+
+      function getId() {
+        var url = window.location.href;
+        var pos = url.search("=");
+        var id = url.slice(pos + 1);
+        return id;
+      }
+
+      function getContact() {
+        fetch(rootPath + "controller/get-contacts/?id=" + id)
+          .then((response) => response.json())
+          .then((data) => displayOutput(data))
+          .catch((error) => console.error("Error fetching contact:", error));
+      }
+
+      function homeLink() {
+        window.open("index.html", "_self");
+      }
+
+      function displayOutput(data) {
+        const avatarImg = `<img src="${rootPath}controller/uploads/${data[0].avatar}" width="200" />`;
+        document.getElementById("avatarImage").innerHTML = avatarImg;
+        document.getElementById("firstname").value = data[0].firstname;
+        document.getElementById("lastname").value = data[0].lastname;
+        document.getElementById("mobile").value = data[0].mobile;
+        document.getElementById("email").value = data[0].email;
+      }
+
+      function editContact() {
+        // Add edit mode animation
+        document.querySelector('.container').classList.add('edit-mode');
+        document.getElementById('statusIndicator').textContent = 'Edit Mode';
+        document.getElementById('statusIndicator').classList.remove('status-view');
+        document.getElementById('statusIndicator').classList.add('status-edit');
+        
+        // Enable form fields
+        document.getElementById("firstname").readOnly = false;
+        document.getElementById("lastname").readOnly = false;
+        document.getElementById("mobile").readOnly = false;
+        document.getElementById("email").readOnly = false;
+        document.getElementById("avatar").hidden = false;
+        document.getElementById("avatarLabel").hidden = false;
+        document.getElementById("submitForm").hidden = false;
+        
+        // Hide edit button, show save button
+        document.getElementById("editContact").style.display = 'none';
+        
+        // Focus first input
+        document.getElementById("firstname").focus();
+      }
+
+      function submitForm(e) {
+        e.preventDefault();
+
+        const submitBtn = document.getElementById("submitForm");
+        const originalText = submitBtn.textContent;
+        
+        // Add loading state
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Saving...";
+        submitBtn.classList.add("loading");
+
+        const form = new FormData(document.querySelector("#editForm"));
+        form.append("apiKey", apiKey);
+        form.append("id", id);
+
+        fetch(rootPath + "controller/edit-contact/", {
+          method: "POST",
+          headers: {
+            accept: "application/json,*,*",
+          },
+          body: form,
+        })
+          .then((response) => response.text())
+          .then((data) => {
+            submitBtn.classList.remove("loading");
+            
+            if (data == "1") {
+              // Success animation
+              document.querySelector('.container').classList.add('success-animation');
+              submitBtn.textContent = "Saved!";
+              submitBtn.style.background = "linear-gradient(135deg, #4CAF50, #45a049)";
+              
+              setTimeout(() => {
+                alert("Contact updated successfully!");
+                homeLink();
+              }, 800);
+            } else {
+              // Reset button on error
+              submitBtn.disabled = false;
+              submitBtn.textContent = originalText;
+              alert(data || "An error occurred. Please try again.");
+            }
+          })
+          .catch((error) => {
+            console.error("Submission error:", error);
+            submitBtn.classList.remove("loading");
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+            alert("Network error. Please check your connection and try again.");
+          });
+      }
+
+      function deleteContact() {
+        // Add delete confirmation animation
+        document.querySelector('.container').classList.add('delete-confirm');
+        
+        setTimeout(() => {
+          document.querySelector('.container').classList.remove('delete-confirm');
+          
+          var confirmDelete = confirm("Delete contact. Are you sure?");
+          if (confirmDelete == true) {
+            const deleteBtn = document.getElementById("deleteContact");
+            deleteBtn.disabled = true;
+            deleteBtn.textContent = "Deleting...";
+            deleteBtn.classList.add("loading");
+            
+            fetch(rootPath + "controller/delete-contacts/?id=" + id)
+              .then((response) => response.text())
+              .then(function (data) {
+                if (data === "1") {
+                  alert("Contact deleted successfully!");
+                  homeLink();
+                } else {
+                  deleteBtn.disabled = false;
+                  deleteBtn.textContent = "Delete";
+                  deleteBtn.classList.remove("loading");
+                  alert(data || "Error deleting contact. Please try again.");
+                }
+              })
+              .catch((error) => {
+                console.error("Error removing contact:", error);
+                deleteBtn.disabled = false;
+                deleteBtn.textContent = "Delete";
+                deleteBtn.classList.remove("loading");
+                alert("Network error. Please try again.");
+              });
+          }
+        }, 300);
+      }
+    </script>
+  </body>
+</html>

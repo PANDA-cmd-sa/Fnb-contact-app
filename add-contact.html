@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Contact</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+        animation: slideUp 0.6s ease-out;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+        font-size: 2.2rem;
+        font-weight: 600;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      label {
+        font-weight: 600;
+        color: #555;
+        font-size: 0.95rem;
+        letter-spacing: 0.5px;
+      }
+
+      input[type="text"],
+      input[type="email"] {
+        padding: 15px 18px;
+        border: 2px solid #e1e8ed;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.8);
+      }
+
+      input[type="text"]:focus,
+      input[type="email"]:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        transform: translateY(-2px);
+      }
+
+      input[type="file"] {
+        padding: 12px;
+        border: 2px dashed #667eea;
+        border-radius: 12px;
+        background: rgba(102, 126, 234, 0.02);
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      input[type="file"]:hover {
+        border-color: #764ba2;
+        background: rgba(118, 75, 162, 0.05);
+      }
+
+      .button-group {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      button {
+        flex: 1;
+        padding: 15px 25px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      #submitForm {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      #submitForm:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+      }
+
+      #submitForm:active {
+        transform: translateY(0);
+      }
+
+      #submitForm:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      #homeLink {
+        background: rgba(255, 255, 255, 0.9);
+        color: #667eea;
+        border: 2px solid #667eea;
+      }
+
+      #homeLink:hover {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      }
+
+      .loading {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .loading::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        animation: loading 1.5s infinite;
+      }
+
+      @keyframes loading {
+        0% { left: -100%; }
+        100% { left: 100%; }
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          padding: 30px 20px;
+          margin: 10px;
+        }
+
+        .button-group {
+          flex-direction: column;
+        }
+
+        h1 {
+          font-size: 1.8rem;
+        }
+      }
+
+      .success-animation {
+        animation: success 0.6s ease-out;
+      }
+
+      @keyframes success {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Add New Contact</h1>
+      <form id="editForm">
+        <div class="form-group">
+          <label for="firstname">First Name</label>
+          <input type="text" name="firstname" id="firstname" required />
+        </div>
+        
+        <div class="form-group">
+          <label for="lastname">Last Name</label>
+          <input type="text" name="lastname" id="lastname" required />
+        </div>
+        
+        <div class="form-group">
+          <label for="mobile">Mobile</label>
+          <input type="text" name="mobile" id="mobile" required />
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" name="email" id="email" required />
+        </div>
+        
+        <div class="form-group">
+          <label for="avatar">Select Avatar</label>
+          <input type="file" name="avatar" id="avatar" accept="image/*" />
+        </div>
+
+        <div class="button-group">
+          <button type="submit" id="submitForm">Submit</button>
+          <button id="homeLink" type="button">Home</button>
+        </div>
+      </form>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+      document
+        .getElementById("editForm")
+        .addEventListener("submit", submitForm);
+      document.getElementById("homeLink").addEventListener("click", homeLink);
+      
+      function submitForm(e) {
+        e.preventDefault();
+        
+        const submitBtn = document.getElementById("submitForm");
+        const originalText = submitBtn.textContent;
+        
+        // Add loading state
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Submitting...";
+        submitBtn.classList.add("loading");
+        
+        const form = new FormData(document.querySelector("#editForm"));
+        form.append("apiKey", apiKey);
+        
+        fetch(rootPath + "controller/insert-contact/", {
+          method: "POST",
+          headers: {
+            accept: "application/json,*,*",
+          },
+          body: form,
+        })
+          .then((response) => response.text())
+          .then((data) => {
+            // Remove loading state
+            submitBtn.classList.remove("loading");
+            
+            if (data == "1") {
+              // Success animation
+              document.querySelector('.container').classList.add('success-animation');
+              submitBtn.textContent = "Success!";
+              submitBtn.style.background = "linear-gradient(135deg, #4CAF50, #45a049)";
+              
+              setTimeout(() => {
+                alert("Contact added successfully!");
+                homeLink();
+              }, 800);
+            } else {
+              // Reset button on error
+              submitBtn.disabled = false;
+              submitBtn.textContent = originalText;
+              alert(data || "An error occurred. Please try again.");
+            }
+          })
+          .catch((error) => {
+            console.error("Submission error:", error);
+            submitBtn.classList.remove("loading");
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+            alert("Network error. Please check your connection and try again.");
+          });
+      }
+      
+      function homeLink() {
+        window.open("index.html", "_self");
+      }
+    </script>
+  </body>
+</html>

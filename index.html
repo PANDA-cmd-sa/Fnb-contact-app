@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Contact Book</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+        animation: slideDown 0.6s ease-out;
+      }
+
+      h1 {
+        color: white;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .subtitle {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.1rem;
+        font-weight: 400;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 800px;
+        animation: slideUp 0.6s ease-out 0.2s both;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 30px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      button {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        min-width: 140px;
+      }
+
+      #addContact {
+        background: linear-gradient(135deg, #4CAF50, #45a049);
+        color: white;
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+      }
+
+      #addContact:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(76, 175, 80, 0.6);
+      }
+
+      #refresh {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      #refresh:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+      }
+
+      #clearSearch {
+        background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+        color: white;
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        min-width: 120px;
+      }
+
+      #clearSearch:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      /* Search and Filter Controls */
+      .controls {
+        margin-bottom: 25px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .search-container {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      #searchInput {
+        padding: 12px 20px;
+        border: 2px solid #e0e0e0;
+        border-radius: 25px;
+        font-size: 1rem;
+        width: 300px;
+        max-width: 100%;
+        transition: all 0.3s ease;
+        background: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      #searchInput:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+        transform: translateY(-2px);
+      }
+
+      /* A-Z Slider */
+      .az-slider {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 3px;
+        flex-wrap: wrap;
+        padding: 15px;
+        background: rgba(102, 126, 234, 0.1);
+        border-radius: 15px;
+        margin-bottom: 20px;
+      }
+
+      .letter-btn {
+        width: 30px;
+        height: 30px;
+        border: none;
+        border-radius: 50%;
+        background: white;
+        color: #667eea;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: auto;
+        padding: 0;
+        text-transform: uppercase;
+        letter-spacing: 0;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .letter-btn:hover {
+        background: #667eea;
+        color: white;
+        transform: scale(1.1);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .letter-btn.active {
+        background: #667eea;
+        color: white;
+        transform: scale(1.1);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.6);
+      }
+
+      .letter-btn.disabled {
+        background: #f5f5f5;
+        color: #ccc;
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+
+      .letter-btn.disabled:hover {
+        background: #f5f5f5;
+        color: #ccc;
+        transform: none;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      #table {
+        min-height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #666;
+        font-size: 1.1rem;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      }
+
+      tr {
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      tr:hover {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+        transform: translateX(5px);
+        box-shadow: 0 2px 10px rgba(102, 126, 234, 0.1);
+      }
+
+      tr:last-child {
+        border-bottom: none;
+      }
+
+      td {
+        padding: 20px 15px;
+        text-align: left;
+        vertical-align: middle;
+      }
+
+      td:first-child {
+        width: 80px;
+        text-align: center;
+      }
+
+      td img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #667eea;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      tr:hover td img {
+        transform: scale(1.1);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.5);
+      }
+
+      h5 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+        transition: color 0.3s ease;
+      }
+
+      tr:hover h5 {
+        color: #667eea;
+      }
+
+      .loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        color: #667eea;
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
+
+      .loading::after {
+        content: '';
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(102, 126, 234, 0.3);
+        border-top: 2px solid #667eea;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #666;
+      }
+
+      .empty-state h3 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+        color: #667eea;
+      }
+
+      .empty-state p {
+        font-size: 1rem;
+        margin-bottom: 20px;
+      }
+
+      .contact-count {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #666;
+        font-size: 0.95rem;
+        font-weight: 500;
+      }
+
+      .contact-count strong {
+        color: #667eea;
+      }
+
+      .fade-in {
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      .success-message {
+        background: linear-gradient(135deg, #4CAF50, #45a049);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        text-align: center;
+        font-weight: 600;
+        animation: slideDown 0.5s ease-out;
+      }
+
+      .search-highlight {
+        background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+        padding: 2px 4px;
+        border-radius: 3px;
+        font-weight: bold;
+      }
+
+      .sort-controls {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .sort-btn {
+        padding: 8px 16px;
+        border: 2px solid #667eea;
+        border-radius: 20px;
+        background: white;
+        color: #667eea;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: auto;
+        text-transform: none;
+        letter-spacing: 0;
+      }
+
+      .sort-btn:hover, .sort-btn.active {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          padding: 20px 15px;
+          margin: 10px;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        button {
+          width: 100%;
+          max-width: 200px;
+        }
+
+        h1 {
+          font-size: 2rem;
+        }
+
+        td {
+          padding: 15px 10px;
+        }
+
+        td img {
+          width: 40px;
+          height: 40px;
+        }
+
+        h5 {
+          font-size: 1rem;
+        }
+
+        #searchInput {
+          width: 100%;
+        }
+
+        .az-slider {
+          gap: 2px;
+          padding: 10px;
+        }
+
+        .letter-btn {
+          width: 25px;
+          height: 25px;
+          font-size: 0.8rem;
+        }
+
+        .search-container {
+          flex-direction: column;
+        }
+
+        .sort-controls {
+          flex-direction: column;
+          gap: 8px;
+        }
+      }
+
+      .refresh-animation {
+        animation: refreshSpin 0.5s ease-out;
+      }
+
+      @keyframes refreshSpin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
+  </head>
+  <body onload="fetchContacts()">
+    <div class="header">
+      <h1>📱 My Contact Book</h1>
+      <p class="subtitle">Manage your contacts with style</p>
+    </div>
+
+    <div class="container">
+      <div class="action-buttons">
+        <button id="addContact" type="button">➕ Add Contact</button>
+        <button id="refresh" type="button">🔄 Refresh</button>
+        <button id="clearSearch" type="button" style="display: none;">🗑️ Clear</button>
+      </div>
+
+      <div class="controls">
+        <div class="search-container">
+          <input type="text" id="searchInput" placeholder="🔍 Search contacts..." />
+        </div>
+        
+        <div class="sort-controls">
+          <button class="sort-btn active" onclick="sortContacts('firstname', this)">👤 First Name</button>
+          <button class="sort-btn" onclick="sortContacts('lastname', this)">📝 Last Name</button>
+          <button class="sort-btn" onclick="sortContacts('recent', this)">🕒 Recently Added</button>
+        </div>
+
+        <div class="az-slider" id="azSlider"></div>
+      </div>
+
+      <div class="contact-count" id="contactCount" style="display: none;"></div>
+      
+      <div id="successMessage" style="display: none;"></div>
+      
+      <div id="table">
+        <div class="loading">Loading contacts</div>
+      </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+      let allContacts = [];
+      let filteredContacts = [];
+      let currentSort = 'firstname';
+      let activeLetter = null;
+
+      document.getElementById("addContact").addEventListener("click", addContact);
+      document.getElementById("refresh").addEventListener("click", refreshContacts);
+      document.getElementById("searchInput").addEventListener("input", handleSearch);
+      document.getElementById("clearSearch").addEventListener("click", clearSearch);
+
+      // Check for success message from adding/editing contacts
+      window.addEventListener('load', function() {
+        if (typeof(Storage) !== "undefined") {
+          if (localStorage.getItem('contactAdded') === 'true') {
+            showSuccessMessage('Contact added successfully! 🎉');
+            localStorage.removeItem('contactAdded');
+          }
+          if (localStorage.getItem('contactEdited') === 'true') {
+            showSuccessMessage('Contact updated successfully! ✨');
+            localStorage.removeItem('contactEdited');
+          }
+        }
+      });
+
+      function showSuccessMessage(message) {
+        const successDiv = document.getElementById('successMessage');
+        successDiv.textContent = message;
+        successDiv.className = 'success-message';
+        successDiv.style.display = 'block';
+        
+        setTimeout(() => {
+          successDiv.style.display = 'none';
+        }, 3000);
+      }
+
+      function refreshContacts() {
+        const refreshBtn = document.getElementById('refresh');
+        refreshBtn.classList.add('refresh-animation');
+        
+        setTimeout(() => {
+          refreshBtn.classList.remove('refresh-animation');
+          fetchContacts();
+        }, 500);
+      }
+
+      function fetchContacts() {
+        document.getElementById("table").innerHTML = '<div class="loading">Loading contacts</div>';
+        document.getElementById("contactCount").style.display = 'none';
+        
+        // Simulate API call - replace with your actual endpoint
+        if (typeof rootPath !== 'undefined') {
+          fetch(rootPath + "controller/get-contacts/")
+            .then((response) => response.json())
+            .then((data) => {
+              allContacts = data || [];
+              filteredContacts = [...allContacts];
+              initializeAZSlider();
+              sortContacts(currentSort);
+            })
+            .catch((error) => {
+              console.error("Fetch error:", error);
+              document.getElementById("table").innerHTML = 
+                '<div class="empty-state"><h3>⚠️ Error Loading Contacts</h3><p>Please check your connection and try again.</p></div>';
+            });
+        } else {
+          // Demo data for testing
+          allContacts = [
+            {id: 1, firstname: "John", lastname: "Doe", avatar: "default-avatar.png"},
+            {id: 2, firstname: "Alice", lastname: "Smith", avatar: "default-avatar.png"},
+            {id: 3, firstname: "Bob", lastname: "Johnson", avatar: "default-avatar.png"},
+            {id: 4, firstname: "Charlie", lastname: "Brown", avatar: "default-avatar.png"},
+            {id: 5, firstname: "Diana", lastname: "Wilson", avatar: "default-avatar.png"}
+          ];
+          filteredContacts = [...allContacts];
+          initializeAZSlider();
+          sortContacts(currentSort);
+        }
+      }
+
+      function initializeAZSlider() {
+        const azSlider = document.getElementById('azSlider');
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+        
+        // Get available first letters
+        const availableLetters = new Set();
+        allContacts.forEach(contact => {
+          if (contact.firstname) {
+            availableLetters.add(contact.firstname.charAt(0).toUpperCase());
+          }
+        });
+
+        azSlider.innerHTML = '';
+        
+        alphabet.forEach(letter => {
+          const btn = document.createElement('button');
+          btn.className = 'letter-btn';
+          btn.textContent = letter;
+          btn.onclick = () => filterByLetter(letter);
+          
+          if (!availableLetters.has(letter)) {
+            btn.classList.add('disabled');
+            btn.onclick = null;
+          }
+          
+          azSlider.appendChild(btn);
+        });
+
+        // Add 'All' button
+        const allBtn = document.createElement('button');
+        allBtn.className = 'letter-btn active';
+        allBtn.textContent = '∀';
+        allBtn.title = 'Show All';
+        allBtn.onclick = () => filterByLetter(null);
+        azSlider.insertBefore(allBtn, azSlider.firstChild);
+      }
+
+      function filterByLetter(letter) {
+        // Update active letter button
+        document.querySelectorAll('.letter-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        
+        if (letter === null) {
+          activeLetter = null;
+          document.querySelector('.letter-btn[title="Show All"]').classList.add('active');
+        } else {
+          activeLetter = letter;
+          document.querySelector(`.letter-btn:not([title]):nth-child(${letter.charCodeAt(0) - 64 + 1})`).classList.add('active');
+        }
+
+        applyFilters();
+      }
+
+      function handleSearch() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const clearBtn = document.getElementById('clearSearch');
+        
+        if (searchTerm.length > 0) {
+          clearBtn.style.display = 'inline-block';
+        } else {
+          clearBtn.style.display = 'none';
+        }
+
+        applyFilters();
+      }
+
+      function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('clearSearch').style.display = 'none';
+        applyFilters();
+      }
+
+      function applyFilters() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        
+        filteredContacts = allContacts.filter(contact => {
+          const matchesSearch = !searchTerm || 
+            contact.firstname.toLowerCase().includes(searchTerm) ||
+            contact.lastname.toLowerCase().includes(searchTerm);
+            
+          const matchesLetter = !activeLetter || 
+            contact.firstname.charAt(0).toUpperCase() === activeLetter;
+            
+          return matchesSearch && matchesLetter;
+        });
+
+        sortContacts(currentSort);
+      }
+
+      function sortContacts(sortBy, clickedButton = null) {
+        currentSort = sortBy;
+        
+        // Update active sort button
+        document.querySelectorAll('.sort-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        
+        // If called from a button click, highlight that button
+        if (clickedButton) {
+          clickedButton.classList.add('active');
+        } else {
+          // If called programmatically, find and highlight the correct button
+          const buttons = document.querySelectorAll('.sort-btn');
+          buttons.forEach(btn => {
+            if ((sortBy === 'firstname' && btn.textContent.includes('First Name')) ||
+                (sortBy === 'lastname' && btn.textContent.includes('Last Name')) ||
+                (sortBy === 'recent' && btn.textContent.includes('Recently Added'))) {
+              btn.classList.add('active');
+            }
+          });
+        }
+
+        switch (sortBy) {
+          case 'firstname':
+            filteredContacts.sort((a, b) => a.firstname.localeCompare(b.firstname));
+            break;
+          case 'lastname':
+            filteredContacts.sort((a, b) => a.lastname.localeCompare(b.lastname));
+            break;
+          case 'recent':
+            filteredContacts.sort((a, b) => b.id - a.id); // Assuming higher ID = more recent
+            break;
+        }
+
+        displayOutput(filteredContacts);
+      }
+
+      function displayOutput(data) {
+        const tableDiv = document.getElementById("table");
+        const countDiv = document.getElementById("contactCount");
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        
+        if (!data || data.length === 0) {
+          let emptyMessage = "📭 No Contacts Yet";
+          let emptyDescription = "Start building your contact book by adding your first contact!";
+          
+          if (allContacts.length > 0) {
+            emptyMessage = "🔍 No Matches Found";
+            emptyDescription = "Try adjusting your search or filter criteria.";
+          }
+          
+          tableDiv.innerHTML = `
+            <div class="empty-state fade-in">
+              <h3>${emptyMessage}</h3>
+              <p>${emptyDescription}</p>
+            </div>`;
+          countDiv.style.display = 'none';
+          return;
+        }
+
+        let output = "<table class='fade-in'>";
+        for (let contact of data) {
+          const avatarSrc = typeof rootPath !== 'undefined' 
+            ? `${rootPath}controller/uploads/${contact.avatar}` 
+            : `https://ui-avatars.com/api/?name=${contact.firstname}+${contact.lastname}&background=667eea&color=fff`;
+            
+          let firstName = contact.firstname;
+          let lastName = contact.lastname;
+          
+          // Highlight search terms
+          if (searchTerm) {
+            firstName = highlightText(firstName, searchTerm);
+            lastName = highlightText(lastName, searchTerm);
+          }
+          
+          output += `
+          <tr onclick="editContact(${contact.id})" title="Click to view/edit contact">
+            <td><img src="${avatarSrc}" alt="${contact.firstname} ${contact.lastname}" /></td>
+            <td><h5>${firstName}</h5></td>
+            <td><h5>${lastName}</h5></td>
+          </tr>`;
+        }
+        output += "</table>";
+        
+        tableDiv.innerHTML = output;
+        
+        // Show contact count
+        const contactCount = data.length;
+        const totalCount = allContacts.length;
+        let countText = `<strong>${contactCount}</strong> contact${contactCount !== 1 ? 's' : ''}`;
+        
+        if (contactCount !== totalCount) {
+          countText += ` (${totalCount} total)`;
+        }
+        
+        countDiv.innerHTML = countText;
+        countDiv.style.display = 'block';
+      }
+
+      function highlightText(text, searchTerm) {
+        if (!searchTerm) return text;
+        
+        const regex = new RegExp(`(${searchTerm})`, 'gi');
+        return text.replace(regex, '<span class="search-highlight">$1</span>');
+      }
+
+      function addContact() {
+        window.open("add-contact.html", "_self");
+      }
+
+      function editContact(id) {
+        window.open("edit-contact.html?id=" + id, "_self");
+      }
+    </script>
+  </body>
+</html>
